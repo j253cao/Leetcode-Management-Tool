@@ -1,0 +1,7 @@
+.sign-up-page-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 1920px;
+  height: 1000px;
+}

@@ -1,0 +1,30 @@
+.backdrop-container {
+  display: flex;
+  flex-direction: row;
+  width: 700px;
+  height: 850px;
+  background: linear-gradient(
+    180deg,
+    rgba(22, 186, 197, 0.69) 0%,
+    #5fb8ff 100%
+  );
+  box-shadow: -10px 10px 100px 1px rgba(0, 0, 0, 0.25);
+  border-radius: 5px;
+  color: white;
+}
+.backdrop-left-block-filler {
+  min-width: 55%;
+}
+
+.backdrop-contents-container {
+  margin-top: 16%;
+}
+
+.backdrop-contents-list {
+  font-size: 1.1em;
+  margin: 0;
+  padding-left: 1em;
+}
+li:not(:last-child) {
+  margin-bottom: 10%;
+}

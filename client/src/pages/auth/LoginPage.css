@@ -1,0 +1,13 @@
+.login-page-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 1920px;
+  height: 1000px;
+}
+
+.login-page-contents-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
