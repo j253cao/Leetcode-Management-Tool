@@ -1,26 +1,25 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { BsFillPersonFill } from 'react-icons/bs';
-import { BiLockAlt } from 'react-icons/bi';
-import { MdAlternateEmail } from 'react-icons/md';
-import validator from 'validator';
-import { useDispatch } from 'react-redux';
-import bcrypt from 'bcryptjs';
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { BsFillPersonFill } from "react-icons/bs";
+import { BiLockAlt } from "react-icons/bi";
+import { MdAlternateEmail } from "react-icons/md";
+import validator from "validator";
+import { useDispatch } from "react-redux";
 
-import './InputForm.css';
-import { formData, invalidInput } from '../../types/inputForm';
-import axios from 'axios';
-import { verifyLogin } from '../../redux/authSlice';
-import { AppDispatch } from '../../redux/store';
+import "./InputForm.css";
+import { formData, invalidInput } from "../../types/inputForm";
+import axios from "axios";
+import { verifyLogin } from "../../redux/authSlice";
+import { AppDispatch } from "../../redux/store";
 
 export default function InputForm({ login = true }: { login: boolean }) {
   const navigate = useNavigate();
   const dispatch = useDispatch<AppDispatch>();
 
-  const [username, setUsername] = useState<string>('');
-  const [email, setEmail] = useState<string>('');
-  const [password, setPassword] = useState<string>('');
-  const [confirmPassword, setConfirmPassword] = useState<string>('');
+  const [username, setUsername] = useState<string>("");
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+  const [confirmPassword, setConfirmPassword] = useState<string>("");
   const [invalidInput, setInvalidInput] = useState<invalidInput>({
     invalidUsername: false,
     invalidEmail: false,
@@ -33,20 +32,19 @@ export default function InputForm({ login = true }: { login: boolean }) {
   const handleFormSubmit = async () => {
     if (login) {
       const login = await dispatch(verifyLogin({ email, password }));
-
-      if (login.payload.hasOwnProperty('email')) {
+      if (login.payload.hasOwnProperty("email")) {
         const { email, password } = login.payload;
         setFailedLogin(false);
-        navigate('/my-list');
-        localStorage.setItem('profile', JSON.stringify({ email, password }));
+        navigate("/my-list");
+        localStorage.setItem("profile", JSON.stringify({ email, password }));
       } else {
         setFailedLogin(true);
       }
     } else {
       const formData: formData = {
-        username: '',
-        email: '',
-        password: '',
+        username: "",
+        email: "",
+        password: "",
       };
       if (username.trim().length >= 3) {
         formData.username = username.trim();
@@ -92,11 +90,11 @@ export default function InputForm({ login = true }: { login: boolean }) {
           };
         });
       }
-      if (formData.username === '' || formData.email === '' || formData.password === '') {
+      if (formData.username === "" || formData.email === "" || formData.password === "") {
         return;
       } else {
         try {
-          const response = await axios.post('http://localhost:5000/users/sign-up', formData);
+          const response = await axios.post("http://localhost:5000/users/sign-up", formData);
           console.log(response);
         } catch (error) {
           console.log(error);
@@ -106,13 +104,13 @@ export default function InputForm({ login = true }: { login: boolean }) {
   };
 
   const handleNavigateAuth = () => {
-    navigate(login ? '/sign-up' : '/login');
+    navigate(login ? "/sign-up" : "/login");
   };
   return (
     <div className="input-form-container">
-      <div className="input-form-header">{login ? 'Login' : 'Sign Up'}</div>
+      <div className="input-form-header">{login ? "Login" : "Sign Up"}</div>
       <div className="input-form-sub-header">
-        {login ? 'Login and track your progress!' : 'Create your account now!'}
+        {login ? "Login and track your progress!" : "Create your account now!"}
       </div>
       {login ? null : (
         <div className="input-form-data-entry-container">
@@ -120,14 +118,14 @@ export default function InputForm({ login = true }: { login: boolean }) {
           <input
             type="text"
             className="input-form-data-entry"
-            placeholder={'Username'}
+            placeholder={"Username"}
             onChange={(event) => setUsername(event.target.value)}
           ></input>
         </div>
       )}
       {invalidInput.invalidUsername ? (
         <div className="input-form-data-entry-error">
-          <p style={{ fontSize: '0.8em' }}>Username must be at least 3 characters</p>
+          <p style={{ fontSize: "0.8em" }}>Username must be at least 3 characters</p>
         </div>
       ) : null}
 
@@ -136,62 +134,62 @@ export default function InputForm({ login = true }: { login: boolean }) {
         <input
           type="text"
           className="input-form-data-entry"
-          placeholder={'Email'}
+          placeholder={"Email"}
           onChange={(event) => setEmail(event.target.value)}
         ></input>
       </div>
       {invalidInput.invalidEmail ? (
         <div className="input-form-data-entry-error">
-          <p style={{ fontSize: '0.8em' }}>Please enter a valid email</p>
+          <p style={{ fontSize: "0.8em" }}>Please enter a valid email</p>
         </div>
       ) : null}
       <div className="input-form-data-entry-container">
         <BiLockAlt size={30} style={{ marginLeft: 10 }} />
         <input
-          type={'password'}
+          type={"password"}
           className="input-form-data-entry"
-          placeholder={'Password'}
+          placeholder={"Password"}
           value={password}
           onChange={(event) => {
-            setPassword(event.target.value.replace(/\s/g, ''));
+            setPassword(event.target.value.replace(/\s/g, ""));
           }}
         ></input>
       </div>
       {failedLogin ? (
         <div className="input-form-data-entry-error">
-          <p style={{ fontSize: '0.8em' }}>Incorrect email or password.</p>
+          <p style={{ fontSize: "0.8em" }}>Incorrect email or password.</p>
         </div>
       ) : null}
       {invalidInput.invalidPassword ? (
         <div className="input-form-data-entry-error">
-          <p style={{ fontSize: '0.8em' }}>Password must be at least 9 characters</p>
+          <p style={{ fontSize: "0.8em" }}>Password must be at least 9 characters</p>
         </div>
       ) : null}
       {login ? null : (
         <div className="input-form-data-entry-container">
           <BiLockAlt size={30} style={{ marginLeft: 10 }} />
           <input
-            type={'password'}
+            type={"password"}
             className="input-form-data-entry"
-            placeholder={'Confirm Password'}
+            placeholder={"Confirm Password"}
             value={confirmPassword}
             onChange={(event) => {
-              setConfirmPassword(event.target.value.replace(/\s/g, ''));
+              setConfirmPassword(event.target.value.replace(/\s/g, ""));
             }}
           ></input>
         </div>
       )}
       {invalidInput.invalidConfirmPassword ? (
         <div className="input-form-data-entry-error">
-          <p style={{ fontSize: '0.8em' }}>Passwords don't match</p>
+          <p style={{ fontSize: "0.8em" }}>Passwords don't match</p>
         </div>
       ) : null}
       <button onClick={handleFormSubmit} className="input-form-button">
-        {login ? 'Login' : 'Sign Up'}
+        {login ? "Login" : "Sign Up"}
       </button>
       <div className="input-form-footer-container">
         <button onClick={handleNavigateAuth} className="input-form-footer-button">
-          {login ? "Don't have an account?" : 'Already have an account?'}
+          {login ? "Don't have an account?" : "Already have an account?"}
         </button>
       </div>
     </div>
