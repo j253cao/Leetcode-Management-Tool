@@ -88,7 +88,19 @@
 .list-header-container {
   display: flex;
   flex-direction: row;
+  justify-content: space-evenly;
   margin-top: 2%;
-  justify-content: space-around;
+  align-items: center;
+  padding-inline: 2em;
   border-bottom: 2px solid black;
+}
+
+.list-header-add-item-button {
+  display: flex;
+  background-color: inherit;
+  border-style: none;
+  font-size: 1.2em;
+}
+.list-header-add-item-button:hover {
+  cursor: pointer;
 }

@@ -1,26 +1,22 @@
 import { combineReducers, configureStore } from "@reduxjs/toolkit";
 
-import authReducer, { authLogout } from "./authSlice";
-import userReducer, { userLogout } from "./userSlice";
-
-export const store = configureStore({
-  reducer: {
-    auth: authReducer,
-    user: userReducer,
-  },
-});
+import authReducer from "./authSlice";
+import userReducer from "./userSlice";
 
 const appReducer = combineReducers({
-  auth: authLogout,
-  user: userLogout,
+  auth: authReducer,
+  user: userReducer,
 });
 
 const rootReducer = (state: any, action: any) => {
-  if (action.type === "authLogout" || action.type === "userLogout") {
-    state = undefined;
+  if (action.type === "auth/authLogout" || action.type === "user/userLogout") {
+    return appReducer(undefined, action);
   }
   return appReducer(state, action);
 };
+export const store = configureStore({
+  reducer: rootReducer,
+});
 
 // Infer the `RootState` and `AppDispatch` types from the store itself
 export type RootState = ReturnType<typeof store.getState>;

@@ -8,9 +8,9 @@ import { useDispatch } from "react-redux";
 
 import "./InputForm.css";
 import { formData, invalidInput } from "../../types/inputForm";
-import axios from "axios";
-import { verifyLogin } from "../../redux/authSlice";
+import { userSignUp, verifyLogin } from "../../redux/authSlice";
 import { AppDispatch } from "../../redux/store";
+import { userLogout } from "../../redux/userSlice";
 
 export default function InputForm({ login = true }: { login: boolean }) {
   const navigate = useNavigate();
@@ -93,11 +93,15 @@ export default function InputForm({ login = true }: { login: boolean }) {
       if (formData.username === "" || formData.email === "" || formData.password === "") {
         return;
       } else {
-        try {
-          const response = await axios.post("http://localhost:5000/users/sign-up", formData);
-          console.log(response);
-        } catch (error) {
-          console.log(error);
+        const response = await dispatch(userSignUp({ email, username, password }));
+        if (response.payload?.token) {
+          localStorage.clear();
+          await dispatch(userLogout());
+          localStorage.setItem(
+            "profile",
+            JSON.stringify({ email, password: response.payload.user.password }),
+          );
+          navigate("/my-list");
         }
       }
     }

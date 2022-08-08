@@ -21,6 +21,7 @@ export const fetchUser = createAsyncThunk(
       const response = await axios.get("http://localhost:5000/users/fetch-user", {
         params: data,
       });
+      return response;
     } catch (error) {}
   },
 );

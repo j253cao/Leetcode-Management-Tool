@@ -1,28 +1,23 @@
 import { useEffect } from "react";
-import { useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 import { useNavigate } from "react-router";
 
 import Backdrop from "../../components/auth/Backdrop";
 import InputForm from "../../components/auth/InputForm";
-import { verifyExistingLogin } from "../../redux/authSlice";
-import { AppDispatch } from "../../redux/store";
+import { selectLoggedInState } from "../../redux/authSlice";
+
 import "./LoginPage.css";
 
 export default function LoginPage() {
   const navigate = useNavigate();
-  const dispatch = useDispatch<AppDispatch>();
+
+  const loggedIn = useSelector(selectLoggedInState);
 
   useEffect(() => {
-    const persistedLogin = async () => {
-      const localUser = localStorage.getItem("profile");
-      if (localUser) {
-        const { email, password } = JSON.parse(localUser);
-        await dispatch(verifyExistingLogin({ email, password }));
-        navigate("/my-list");
-      }
-    };
-    persistedLogin();
-  }, []);
+    if (loggedIn) {
+      navigate("/my-list");
+    }
+  }, [loggedIn]);
 
   return (
     <div className="login-page-container">

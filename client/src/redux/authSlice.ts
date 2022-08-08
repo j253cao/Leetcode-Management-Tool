@@ -34,22 +34,23 @@ export const verifyLogin = createAsyncThunk(
     }
   },
 );
-export const verifyExistingLogin = createAsyncThunk(
-  "auth/existing-login",
+
+export const userSignUp = createAsyncThunk(
+  "auth/sign-up",
   async (
     data: {
+      username: string;
       email: string;
       password: string;
     },
     thunkAPI,
   ) => {
     try {
-      const response = await axios.post("http://localhost:5000/users/existing-login", data);
-      const token = response.data.token;
-      const result = { ...response.data.result, token };
+      const response = await axios.post("http://localhost:5000/users/sign-up", data);
+      const result = response.data;
+
       return result;
     } catch (error) {
-      console.log(error);
       return error;
     }
   },
@@ -73,15 +74,11 @@ export const authSlice = createSlice({
         state.userId = action.payload._id;
       }
     });
-    builder.addCase(verifyExistingLogin.fulfilled, (state, action) => {
-      if (
-        action.payload.response?.status !== 404 &&
-        action.payload.response?.status !== 400 &&
-        action.payload.response?.status !== 0
-      ) {
+    builder.addCase(userSignUp.fulfilled, (state, action) => {
+      if (action.payload?.user) {
         state.loggedIn = true;
-        state.token = action.payload.token;
-        state.userId = action.payload._id;
+        state.token = action.payload.user.token;
+        state.userId = action.payload.user._id;
       }
     });
   },
