@@ -3,7 +3,7 @@ import { FiSearch } from "react-icons/fi";
 import { useNavigate } from "react-router";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "../../redux/store";
-import { MdInbox, MdPlaylistAdd } from "react-icons/md";
+import { MdPlaylistAdd } from "react-icons/md";
 import Modal from "react-modal";
 
 import "./MyListPage.css";
@@ -11,6 +11,7 @@ import SummaryBox from "../../components/list/SummaryBox";
 import { authLogout } from "../../redux/authSlice";
 import ListItem from "../../components/list/ListItem";
 import AddItemForm from "../../components/list/AddItemForm";
+import { AiOutlineClose } from "react-icons/ai";
 
 Modal.setAppElement("#root");
 
@@ -34,10 +35,11 @@ const ListHeader = () => {
     "Status",
     "Name",
     "Difficulty",
-    "Topics",
     "Time Taken",
     "Date Completed",
+    "Topics",
   ];
+
   return (
     <div className="list-header-container">
       {headerCategories.map((category) => {
@@ -48,10 +50,6 @@ const ListHeader = () => {
       <button className="list-header-add-item-button" onClick={changeModalState}>
         <MdPlaylistAdd size={36} style={{ color: "#5863f8", alignSelf: "flex-end" }} />
       </button>
-
-      <Modal isOpen={modalOpen} onRequestClose={changeModalState} contentLabel="Example Modal">
-        <AddItemForm />
-      </Modal>
     </div>
   );
 };
@@ -59,6 +57,7 @@ const ListHeader = () => {
 export default function MyListPage() {
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
+  const [addingActive, setAddingActive] = useState<boolean>(false);
 
   const handleUserLogout = async () => {
     localStorage.clear();
@@ -121,6 +120,15 @@ export default function MyListPage() {
     );
   };
 
+  const headerCategories = [
+    "Status",
+    "Name",
+    "Difficulty",
+    "Time Taken",
+    "Date Completed",
+    "Topics",
+  ];
+
   return (
     <div className="list-page-container">
       <NavigationTab />
@@ -132,7 +140,35 @@ export default function MyListPage() {
           <SummaryBox status={"To-Do"} numberOfItems={14} />
         </div>
         <SearchBar />
-        <ListHeader />
+        <div className="list-header-container">
+          {headerCategories.map((category) => {
+            return (
+              <h3
+                style={{
+                  fontWeight: "normal",
+                  width: "15%",
+                  fontSize: "1.2em",
+                  textAlign: "center",
+                }}
+              >
+                {category}
+              </h3>
+            );
+          })}
+          <button
+            className="list-header-add-item-button"
+            onClick={() => {
+              setAddingActive(!addingActive);
+            }}
+          >
+            {addingActive ? (
+              <AiOutlineClose size={36} color={"#FF3333"} />
+            ) : (
+              <MdPlaylistAdd size={36} style={{ color: "#5863f8" }} />
+            )}
+          </button>
+        </div>
+        {addingActive && <AddItemForm />}
       </div>
     </div>
   );

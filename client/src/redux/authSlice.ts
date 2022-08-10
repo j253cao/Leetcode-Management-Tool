@@ -51,6 +51,7 @@ export const userSignUp = createAsyncThunk(
 
       return result;
     } catch (error) {
+      console.log(error);
       return error;
     }
   },

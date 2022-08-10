@@ -25,6 +25,7 @@ export default function InputForm({ login = true }: { login: boolean }) {
     invalidEmail: false,
     invalidPassword: false,
     invalidConfirmPassword: false,
+    existingEmail: false,
   });
   const [failedLogin, setFailedLogin] = useState<boolean>(false);
 
@@ -102,6 +103,8 @@ export default function InputForm({ login = true }: { login: boolean }) {
             JSON.stringify({ email, password: response.payload.user.password }),
           );
           navigate("/my-list");
+        } else if (response.payload.response.status === 400) {
+          setInvalidInput({ ...invalidInput, existingEmail: true });
         }
       }
     }
@@ -142,11 +145,16 @@ export default function InputForm({ login = true }: { login: boolean }) {
           onChange={(event) => setEmail(event.target.value)}
         ></input>
       </div>
-      {invalidInput.invalidEmail ? (
+      {invalidInput.invalidEmail && (
         <div className="input-form-data-entry-error">
           <p style={{ fontSize: "0.8em" }}>Please enter a valid email</p>
         </div>
-      ) : null}
+      )}
+      {invalidInput.existingEmail && (
+        <div className="input-form-data-entry-error">
+          <p style={{ fontSize: "0.8em" }}>User already exists</p>
+        </div>
+      )}
       <div className="input-form-data-entry-container">
         <BiLockAlt size={30} style={{ marginLeft: 10 }} />
         <input

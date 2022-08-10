@@ -16,7 +16,6 @@ export default function App() {
       const localUser = localStorage.getItem("profile");
       if (localUser) {
         const { email, password } = JSON.parse(localUser);
-        console.log(email, password);
         await dispatch(verifyLogin({ email, password }));
       }
     };
