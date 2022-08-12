@@ -1,30 +1,49 @@
+import { stat } from "fs";
 import { useState } from "react";
 import { MdPlaylistAdd } from "react-icons/md";
+import { useDispatch, useSelector } from "react-redux";
+
+import { selectUserId } from "../../redux/authSlice";
+import { addItemEntry, status } from "../../redux/itemSlice";
+import { AppDispatch } from "../../redux/store";
 
 import "./AddItemForm.css";
 
 export default function AddItemForm() {
+  const dispatch = useDispatch<AppDispatch>();
+
   const [status, setStatus] = useState("");
-  const [name, setName] = useState("");
+  const [problemName, setProblemName] = useState("");
   const [difficulty, setDifficulty] = useState("");
-  const [time, setTime] = useState("");
-  const [date, setDate] = useState("");
+  const [timeTaken, setTimeTaken] = useState("");
+  const [dateCompleted, setDateCompleted] = useState("");
   const [topics, setTopics] = useState("");
+  const ownerId = useSelector(selectUserId);
+  const handleSubmit = async () => {
+    const inputData = {
+      status,
+      problemName,
+      difficulty,
+      timeTaken,
+      dateCompleted,
+      topics,
+      ownerId,
+    };
 
-  const handleSubmit = () => {
-    console.log(status, name, difficulty, time, date, topics);
+    try {
+      const response = await dispatch(addItemEntry(inputData));
+    } catch (error) {}
   };
-
   return (
     <div className="add-item-form-container">
       <form className="add-item-form-container" style={{ margin: 0 }}>
         <select
           onChange={(event) => setStatus(event.target.value)}
-          value={status}
+          defaultValue={"status"}
           className="add-item-text-input"
           required
         >
-          <option selected={true}>Status</option>
+          <option id="status">Status</option>
           <option>Completed</option>
           <option style={{ fontSize: "1.2em" }}>Attempted</option>
           <option style={{ fontSize: "1.2em" }}>To-Do</option>
@@ -32,8 +51,8 @@ export default function AddItemForm() {
 
         <input
           className="add-item-text-input"
-          onChange={(event) => setName(event.target.value)}
-          value={name}
+          onChange={(event) => setProblemName(event.target.value)}
+          value={problemName}
           placeholder="Name"
           required
         ></input>
@@ -44,15 +63,15 @@ export default function AddItemForm() {
           className="add-item-text-input"
           required
         >
-          <option selected={true}>Difficulty</option>
+          <option>Difficulty</option>
           <option>Easy</option>
           <option>Medium</option>
           <option>Hard</option>
         </select>
 
         <input
-          onChange={(event) => setTime(event.target.value)}
-          value={time}
+          onChange={(event) => setTimeTaken(event.target.value)}
+          value={timeTaken}
           type="text"
           className="add-item-text-input"
           placeholder="Time Taken"
@@ -60,8 +79,8 @@ export default function AddItemForm() {
         ></input>
 
         <input
-          onChange={(event) => setDate(event.target.value)}
-          value={date}
+          onChange={(event) => setDateCompleted(event.target.value)}
+          value={dateCompleted}
           className="add-item-text-input"
           type="date"
           required

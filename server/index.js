@@ -4,6 +4,7 @@ import mongoose from "mongoose";
 import dotenv from "dotenv";
 
 import usersRoutes from "./routes/users.js";
+import entriesRoutes from "./routes/entries.js";
 dotenv.config();
 
 const app = express();
@@ -13,6 +14,7 @@ app.use(cors());
 app.use(express.json());
 
 app.use("/users", usersRoutes);
+app.use("/entries", entriesRoutes);
 
 const mongoDBUri = process.env.MONGOOSE_URI;
 mongoose.connect(mongoDBUri, { useNewUrlParser: true });

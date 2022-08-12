@@ -2,15 +2,15 @@ import mongoose from "mongoose";
 
 const entrySchema = new mongoose.Schema(
   {
-    status: { type: String, required: true, unique: true },
+    status: { type: String, required: true },
     problemName: { type: String, required: true },
     difficulty: { type: String, required: true },
     timeTaken: { type: String, required: true },
-    dateCompleted: { type: Date, required: true },
-    owenerId: { type: String, required: true },
+    dateCompleted: { type: String, required: true },
+    ownerId: { type: String, required: true },
   },
   {
-    collection: "problem-entries",
+    collection: "item-entries",
     timestamps: true,
   },
 );

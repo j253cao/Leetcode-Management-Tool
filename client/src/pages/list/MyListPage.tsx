@@ -42,9 +42,11 @@ const ListHeader = () => {
 
   return (
     <div className="list-header-container">
-      {headerCategories.map((category) => {
+      {headerCategories.map((category, index) => {
         return (
-          <h3 style={{ fontWeight: "normal", width: "15%", fontSize: "1.2em" }}>{category}</h3>
+          <h3 key={index} style={{ fontWeight: "normal", width: "15%", fontSize: "1.2em" }}>
+            {category}
+          </h3>
         );
       })}
       <button className="list-header-add-item-button" onClick={changeModalState}>
@@ -141,9 +143,10 @@ export default function MyListPage() {
         </div>
         <SearchBar />
         <div className="list-header-container">
-          {headerCategories.map((category) => {
+          {headerCategories.map((category, index) => {
             return (
               <h3
+                key={index}
                 style={{
                   fontWeight: "normal",
                   width: "15%",
