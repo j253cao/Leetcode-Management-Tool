@@ -1,17 +1,18 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FiSearch } from "react-icons/fi";
 import { useNavigate } from "react-router";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch } from "../../redux/store";
 import { MdPlaylistAdd } from "react-icons/md";
 import Modal from "react-modal";
 
 import "./MyListPage.css";
 import SummaryBox from "../../components/list/SummaryBox";
-import { authLogout } from "../../redux/authSlice";
+import { authLogout, selectUserId } from "../../redux/authSlice";
 import ListItem from "../../components/list/ListItem";
 import AddItemForm from "../../components/list/AddItemForm";
 import { AiOutlineClose } from "react-icons/ai";
+import { fetchAllItems, selectAllItems } from "../../redux/itemSlice";
 
 Modal.setAppElement("#root");
 
@@ -24,42 +25,20 @@ const SearchBar = () => {
   );
 };
 
-const ListHeader = () => {
-  const [modalOpen, setModalOpen] = useState(false);
-
-  const changeModalState = () => {
-    setModalOpen(!modalOpen);
-  };
-
-  const headerCategories = [
-    "Status",
-    "Name",
-    "Difficulty",
-    "Time Taken",
-    "Date Completed",
-    "Topics",
-  ];
-
-  return (
-    <div className="list-header-container">
-      {headerCategories.map((category, index) => {
-        return (
-          <h3 key={index} style={{ fontWeight: "normal", width: "15%", fontSize: "1.2em" }}>
-            {category}
-          </h3>
-        );
-      })}
-      <button className="list-header-add-item-button" onClick={changeModalState}>
-        <MdPlaylistAdd size={36} style={{ color: "#5863f8", alignSelf: "flex-end" }} />
-      </button>
-    </div>
-  );
-};
-
 export default function MyListPage() {
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
   const [addingActive, setAddingActive] = useState<boolean>(false);
+
+  const userId = useSelector(selectUserId);
+  useEffect(() => {
+    const dispatchAllEntries = async () => {
+      await dispatch(fetchAllItems({ ownerId: userId }));
+    };
+    dispatchAllEntries();
+  }, [userId]);
+
+  const items = useSelector(selectAllItems);
 
   const handleUserLogout = async () => {
     localStorage.clear();
@@ -172,6 +151,11 @@ export default function MyListPage() {
           </button>
         </div>
         {addingActive && <AddItemForm />}
+        {items
+          ? items.map((item, index) => {
+              return <ListItem key={index} data={item} />;
+            })
+          : null}
       </div>
     </div>
   );

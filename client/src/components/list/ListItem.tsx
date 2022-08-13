@@ -1,47 +1,74 @@
 import { AiOutlineCheck, AiOutlineLoading3Quarters } from "react-icons/ai";
 import { RiTodoLine } from "react-icons/ri";
+import { FcCollapse, FcExpand } from "react-icons/fc";
 
 import "./ListItem.css";
+import { item } from "../../redux/itemSlice";
+import { useState } from "react";
 
-interface Data {
-  status: string;
-  name: string;
-  difficulty: string;
-  topics: string;
-  timeTaken: number;
-  dateCompleted: Date;
-}
-
-export default function ListItem({ data }: { data: Data }) {
-  const { status, name, difficulty, topics, timeTaken, dateCompleted } = data;
-  const listItemValueKeys = [
-    "status",
-    "name",
-    "difficulty",
-    "topics",
-    "timeTaken",
-    "dateCompleted",
-  ];
+export default function ListItem({ data }: { data: item }) {
+  const { status, problemName, difficulty, topics, timeTaken, dateCompleted } = data;
+  const [expanded, setExpaned] = useState(false);
   const listItemValues = {
     status: {
-      completed: <AiOutlineCheck size={24} style={{ color: "#34C700" }} />,
-      inProgress: <AiOutlineLoading3Quarters size={24} style={{ color: "#FF8A00" }} />,
-      toDo: <RiTodoLine size={24} style={{ color: "#5863f8" }} />,
+      Completed: <AiOutlineCheck size={30} style={{ color: "#34C700" }} />,
+      Attempted: <AiOutlineLoading3Quarters size={24} style={{ color: "#FF8A00" }} />,
+      "To-Do": <RiTodoLine size={27} style={{ color: "#5863f8" }} />,
     },
-    name,
-    difficulty,
-    topics,
-    timeTaken,
-    dateCompleted,
+    difficulty: {
+      Easy: "#34C700",
+      Medium: "#FF8A00",
+      Hard: "#FF3333",
+    },
   };
-  return (
-    <div className="list-item-container">
-      <h3>Status</h3>
-      <h3>name</h3>
-      <h3>difficulty</h3>
-      <h3>topics</h3>
-      <h3>time taken</h3>
-      <h3>date Com</h3>
-    </div>
-  );
+
+  const RegularItem = () => {
+    return (
+      <div className="list-item-container">
+        <div className="list-item-property" style={{ height: 43 }}>
+          {listItemValues.status[status]}
+        </div>
+
+        <h3 className="list-item-property">
+          {problemName.length > 25 ? `${problemName.slice(0, 25)}...` : problemName}
+        </h3>
+        <h3 className="list-item-property" style={{ color: listItemValues.difficulty[difficulty] }}>
+          {difficulty}
+        </h3>
+        <h3 className="list-item-property">{timeTaken}</h3>
+        <h3 className="list-item-property">{dateCompleted}</h3>
+        <h3 className="list-item-property">
+          {topics ? (topics.length > 25 ? `${topics.slice(0, 25)}...` : topics) : null}
+        </h3>
+        <button onClick={() => setExpaned(true)} className="list-item-edit-button">
+          <FcExpand size={24} />
+        </button>
+      </div>
+    );
+  };
+  const ExpandedItem = () => {
+    return (
+      <div className="list-item-container">
+        <div className="list-item-property" style={{ height: 43 }}>
+          {listItemValues.status[status]}
+        </div>
+
+        <h3 className="list-item-property" style={{ height: "auto" }}>
+          {problemName}asjkdnaskjdnalasajdnlajsndlaansld
+        </h3>
+        <h3 className="list-item-property" style={{ color: listItemValues.difficulty[difficulty] }}>
+          {difficulty}
+        </h3>
+        <h3 className="list-item-property">{timeTaken}</h3>
+        <h3 className="list-item-property">{dateCompleted}</h3>
+        <h3 className="list-item-property">
+          {topics ? (topics.length > 25 ? `${topics.slice(0, 25)}...` : topics) : null}
+        </h3>
+        <button onClick={() => setExpaned(false)} className="list-item-edit-button">
+          <FcCollapse size={24} />
+        </button>
+      </div>
+    );
+  };
+  return expanded ? <ExpandedItem /> : <RegularItem />;
 }

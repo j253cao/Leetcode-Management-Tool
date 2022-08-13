@@ -1,10 +1,12 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 import { stat } from "fs";
+import { RootState } from "./store";
 
 export type difficulty = "Easy" | "Medium" | "Hard";
 export type status = "Completed" | "Attempted" | "To-Do";
-type item = {
+
+export interface item {
   status: status;
   problemName: String;
   difficulty: difficulty;
@@ -12,13 +14,17 @@ type item = {
   dateCompleted: String;
   topics?: String;
   ownerId: String;
-};
+  _id: string;
+  __v: number;
+  updatedAt: string;
+  createdAt: string;
+}
 
 interface ItemsState {
   itemList: {
     [itemId: string]: item;
   };
-  itemIdList: String[];
+  itemIdList: string[];
 }
 
 const initialState: ItemsState = {
@@ -27,7 +33,7 @@ const initialState: ItemsState = {
 };
 
 export const addItemEntry = createAsyncThunk(
-  "user/fetch",
+  "entries/add",
   async (
     data: {
       status: string;
@@ -47,6 +53,26 @@ export const addItemEntry = createAsyncThunk(
   },
 );
 
+export const fetchAllItems = createAsyncThunk(
+  "entry/fetch",
+  async (
+    data: {
+      ownerId: string;
+    },
+    thunkAPI,
+  ) => {
+    try {
+      const response = await axios.get("http://localhost:5000/entries/fetch", {
+        params: { ownerId: data.ownerId },
+      });
+      const result = response.data.response;
+      return result;
+    } catch (error) {
+      return error;
+    }
+  },
+);
+
 export const itemsSlice = createSlice({
   name: "items",
   initialState,
@@ -60,7 +86,24 @@ export const itemsSlice = createSlice({
         state.itemIdList.push(action.payload._id);
       }
     });
+    builder.addCase(fetchAllItems.fulfilled, (state, action) => {
+      const items = action.payload;
+      items.forEach((item: item) => {
+        if (!state.itemList.hasOwnProperty(item._id)) {
+          state.itemList[item._id] = item;
+          state.itemIdList.push(item._id);
+        }
+      });
+    });
   },
 });
+
+export const selectAllItems = (state: RootState) => {
+  let response: item[] = [];
+  state.item.itemIdList.forEach((id) => {
+    response.push(state.item.itemList[id]);
+  });
+  return response;
+};
 
 export default itemsSlice.reducer;

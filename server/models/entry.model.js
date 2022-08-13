@@ -8,6 +8,7 @@ const entrySchema = new mongoose.Schema(
     timeTaken: { type: String, required: true },
     dateCompleted: { type: String, required: true },
     ownerId: { type: String, required: true },
+    topics: { type: String, required: false },
   },
   {
     collection: "item-entries",

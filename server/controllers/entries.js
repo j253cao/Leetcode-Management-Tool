@@ -17,3 +17,15 @@ export const addEntry = async (req, res) => {
     return res.status(500).json({ message: "Something went wrong" });
   }
 };
+
+export const getAllEntries = async (req, res) => {
+  const { ownerId } = req.body;
+  try {
+    const response = await Entry.find(ownerId);
+    if (!response) return res.status(400).json({ message: "Invalid owner id" });
+    return res.status(200).json({ response });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: "Something went wrong" });
+  }
+};
