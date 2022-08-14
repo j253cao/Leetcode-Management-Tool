@@ -1,15 +1,20 @@
-import { stat } from "fs";
 import { useState } from "react";
 import { MdPlaylistAdd } from "react-icons/md";
 import { useDispatch, useSelector } from "react-redux";
 
 import { selectUserId } from "../../redux/authSlice";
-import { addItemEntry, status } from "../../redux/itemSlice";
+import { addItemEntry } from "../../redux/itemSlice";
 import { AppDispatch } from "../../redux/store";
 
 import "./AddItemForm.css";
 
-export default function AddItemForm() {
+export default function AddItemForm({
+  addingActive,
+  setAddingActive,
+}: {
+  addingActive: boolean;
+  setAddingActive: Function;
+}) {
   const dispatch = useDispatch<AppDispatch>();
 
   const [status, setStatus] = useState("");
@@ -18,7 +23,40 @@ export default function AddItemForm() {
   const [timeTaken, setTimeTaken] = useState("");
   const [dateCompleted, setDateCompleted] = useState("");
   const [topics, setTopics] = useState("");
+
+  const [errors, setErrors] = useState({
+    status: false,
+    problemName: false,
+    difficulty: false,
+    timeTaken: false,
+    dateCompleted: false,
+  });
+
   const ownerId = useSelector(selectUserId);
+
+  const handleErrorCheck = () => {
+    console.log(difficulty);
+    setErrors((prevState) => {
+      return { ...prevState, status: !status ? true : false };
+    });
+
+    setErrors((prevState) => {
+      return { ...prevState, problemName: !problemName ? true : false };
+    });
+
+    setErrors((prevState) => {
+      return { ...prevState, difficulty: !difficulty ? true : false };
+    });
+
+    setErrors((prevState) => {
+      return { ...prevState, timeTaken: !timeTaken ? true : false };
+    });
+
+    setErrors((prevState) => {
+      return { ...prevState, dateCompleted: !dateCompleted ? true : false };
+    });
+  };
+
   const handleSubmit = async () => {
     const inputData = {
       status,
@@ -32,7 +70,18 @@ export default function AddItemForm() {
 
     try {
       const response = await dispatch(addItemEntry(inputData));
-    } catch (error) {}
+      if (response) {
+        setStatus("");
+        setProblemName("");
+        setDateCompleted("");
+        setDifficulty("");
+        setTopics("");
+        setTimeTaken("");
+      }
+    } catch (error) {
+      return error;
+    }
+    handleErrorCheck();
   };
   return (
     <div className="add-item-form-container">
@@ -41,6 +90,9 @@ export default function AddItemForm() {
           onChange={(event) => setStatus(event.target.value)}
           defaultValue={"status"}
           className="add-item-text-input"
+          style={
+            errors.status ? { borderStyle: "solid", borderColor: "#FF3333", borderWidth: 1 } : {}
+          }
           required
         >
           <option id="status">Status</option>
@@ -54,6 +106,11 @@ export default function AddItemForm() {
           onChange={(event) => setProblemName(event.target.value)}
           value={problemName}
           placeholder="Name"
+          style={
+            errors.problemName
+              ? { borderStyle: "solid", borderColor: "#FF3333", borderWidth: 1 }
+              : {}
+          }
           required
         ></input>
 
@@ -61,6 +118,11 @@ export default function AddItemForm() {
           onChange={(event) => setDifficulty(event.target.value)}
           value={difficulty}
           className="add-item-text-input"
+          style={
+            errors.difficulty
+              ? { borderStyle: "solid", borderColor: "#FF3333", borderWidth: 1 }
+              : {}
+          }
           required
         >
           <option>Difficulty</option>
@@ -75,6 +137,9 @@ export default function AddItemForm() {
           type="text"
           className="add-item-text-input"
           placeholder="Time Taken"
+          style={
+            errors.timeTaken ? { borderStyle: "solid", borderColor: "#FF3333", borderWidth: 1 } : {}
+          }
           required
         ></input>
 
@@ -83,6 +148,11 @@ export default function AddItemForm() {
           value={dateCompleted}
           className="add-item-text-input"
           type="date"
+          style={
+            errors.dateCompleted
+              ? { borderStyle: "solid", borderColor: "#FF3333", borderWidth: 1 }
+              : {}
+          }
           required
         ></input>
 

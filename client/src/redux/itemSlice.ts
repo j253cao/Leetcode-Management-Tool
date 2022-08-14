@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 import { stat } from "fs";
+import { Root } from "react-dom/client";
 import { RootState } from "./store";
 
 export type difficulty = "Easy" | "Medium" | "Hard";
@@ -73,6 +74,25 @@ export const fetchAllItems = createAsyncThunk(
   },
 );
 
+export const deleteItemEntry = createAsyncThunk(
+  "entry/delete",
+  async (
+    data: {
+      _id: string;
+    },
+    thunkAPI,
+  ) => {
+    try {
+      const response = await axios.delete("http://localhost:5000/entries/delete", { data });
+      const result = response.data.response;
+      return result;
+    } catch (error) {
+      console.log("axios error", error);
+      return error;
+    }
+  },
+);
+
 export const itemsSlice = createSlice({
   name: "items",
   initialState,
@@ -95,14 +115,79 @@ export const itemsSlice = createSlice({
         }
       });
     });
+    builder.addCase(deleteItemEntry.fulfilled, (state, action) => {
+      const { _id } = action.payload;
+      delete state.itemList[_id];
+      const index = state.itemIdList.findIndex((id) => id === _id);
+      state.itemIdList.splice(index, 1);
+    });
   },
 });
 
-export const selectAllItems = (state: RootState) => {
+export const selectPagedItems = (state: RootState, page: number | null = null) => {
   let response: item[] = [];
-  state.item.itemIdList.forEach((id) => {
-    response.push(state.item.itemList[id]);
-  });
+  if (page) {
+    state.item.itemIdList.slice((page - 1) * 10, page * 10 - 1).forEach((id) => {
+      response.push(state.item.itemList[id]);
+    });
+  } else {
+    state.item.itemIdList.forEach((id) => {
+      response.push(state.item.itemList[id]);
+    });
+  }
+
+  return response;
+};
+
+export const selectPagedCompletedItems = (state: RootState, page: number | null = null) => {
+  let response: item[] = [];
+  if (page) {
+    state.item.itemIdList.forEach((id) => {
+      const item = state.item.itemList[id];
+      if (response.length < 10 && item.status === "Completed") {
+        response.push(state.item.itemList[id]);
+      }
+    });
+  } else {
+    state.item.itemIdList.forEach((id) => {
+      const item = state.item.itemList[id];
+      if (item.status === "Completed") response.push(state.item.itemList[id]);
+    });
+  }
+  return response;
+};
+export const selectPagedAttemptedItems = (state: RootState, page: number | null = null) => {
+  let response: item[] = [];
+  if (page) {
+    state.item.itemIdList.forEach((id) => {
+      const item = state.item.itemList[id];
+      if (response.length < 10 && item.status === "Attempted") {
+        response.push(state.item.itemList[id]);
+      }
+    });
+  } else {
+    state.item.itemIdList.forEach((id) => {
+      const item = state.item.itemList[id];
+      if (item.status === "Attempted") response.push(state.item.itemList[id]);
+    });
+  }
+  return response;
+};
+export const selectPagedToDoItems = (state: RootState, page: number | null = null) => {
+  let response: item[] = [];
+  if (page) {
+    state.item.itemIdList.forEach((id) => {
+      const item = state.item.itemList[id];
+      if (response.length < 10 && item.status === "To-Do") {
+        response.push(state.item.itemList[id]);
+      }
+    });
+  } else {
+    state.item.itemIdList.forEach((id) => {
+      const item = state.item.itemList[id];
+      if (item.status === "To-Do") response.push(state.item.itemList[id]);
+    });
+  }
   return response;
 };
 

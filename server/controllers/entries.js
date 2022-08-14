@@ -29,3 +29,14 @@ export const getAllEntries = async (req, res) => {
     return res.status(500).json({ message: "Something went wrong" });
   }
 };
+
+export const deleteEntry = async (req, res) => {
+  const { _id } = req.body;
+  try {
+    const response = await Entry.findByIdAndDelete(_id);
+    return res.status(200).json({ response });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: "Something went wrong" });
+  }
+};

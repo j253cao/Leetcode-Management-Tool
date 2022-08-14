@@ -2,9 +2,8 @@ import { useEffect, useState } from "react";
 import { FiSearch } from "react-icons/fi";
 import { useNavigate } from "react-router";
 import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch } from "../../redux/store";
+import { AppDispatch, RootState } from "../../redux/store";
 import { MdPlaylistAdd } from "react-icons/md";
-import Modal from "react-modal";
 
 import "./MyListPage.css";
 import SummaryBox from "../../components/list/SummaryBox";
@@ -12,9 +11,13 @@ import { authLogout, selectUserId } from "../../redux/authSlice";
 import ListItem from "../../components/list/ListItem";
 import AddItemForm from "../../components/list/AddItemForm";
 import { AiOutlineClose } from "react-icons/ai";
-import { fetchAllItems, selectAllItems } from "../../redux/itemSlice";
-
-Modal.setAppElement("#root");
+import {
+  fetchAllItems,
+  selectPagedAttemptedItems,
+  selectPagedCompletedItems,
+  selectPagedItems,
+  selectPagedToDoItems,
+} from "../../redux/itemSlice";
 
 const SearchBar = () => {
   return (
@@ -38,7 +41,11 @@ export default function MyListPage() {
     dispatchAllEntries();
   }, [userId]);
 
-  const items = useSelector(selectAllItems);
+  const items = useSelector((state: RootState) => selectPagedItems(state, 1));
+  const allItems = useSelector(selectPagedItems);
+  const allCompletedItems = useSelector(selectPagedCompletedItems);
+  const allAttemptedItems = useSelector(selectPagedAttemptedItems);
+  const allToDoItems = useSelector(selectPagedToDoItems);
 
   const handleUserLogout = async () => {
     localStorage.clear();
@@ -115,10 +122,10 @@ export default function MyListPage() {
       <NavigationTab />
       <div className="list-page-body">
         <div className="list-page-summary-box-row-container">
-          <SummaryBox status={"All Problems"} numberOfItems={256} />
-          <SummaryBox status={"Completed"} numberOfItems={148} />
-          <SummaryBox status={"In-Progress"} numberOfItems={94} />
-          <SummaryBox status={"To-Do"} numberOfItems={14} />
+          <SummaryBox status={"All Problems"} numberOfItems={allItems.length} />
+          <SummaryBox status={"Completed"} numberOfItems={allCompletedItems.length} />
+          <SummaryBox status={"In-Progress"} numberOfItems={allAttemptedItems.length} />
+          <SummaryBox status={"To-Do"} numberOfItems={allToDoItems.length} />
         </div>
         <SearchBar />
         <div className="list-header-container">
@@ -142,15 +149,18 @@ export default function MyListPage() {
             onClick={() => {
               setAddingActive(!addingActive);
             }}
+            style={{ width: 48 }}
           >
             {addingActive ? (
-              <AiOutlineClose size={36} color={"#FF3333"} />
+              <AiOutlineClose size={24} color={"#FF3333"} />
             ) : (
               <MdPlaylistAdd size={36} style={{ color: "#5863f8" }} />
             )}
           </button>
         </div>
-        {addingActive && <AddItemForm />}
+        {addingActive && (
+          <AddItemForm addingActive={addingActive} setAddingActive={setAddingActive} />
+        )}
         {items
           ? items.map((item, index) => {
               return <ListItem key={index} data={item} />;
