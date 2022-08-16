@@ -1,7 +1,5 @@
 import { AiOutlineCheck, AiOutlineClose, AiOutlineLoading3Quarters } from "react-icons/ai";
 import { RiTodoLine } from "react-icons/ri";
-import { FcCollapse, FcExpand } from "react-icons/fc";
-
 import { useState } from "react";
 import { useDispatch } from "react-redux";
 
@@ -13,7 +11,7 @@ export default function ListItem({ data }: { data: item }) {
   const dispatch = useDispatch<AppDispatch>();
 
   const { status, problemName, difficulty, topics, timeTaken, dateCompleted, _id } = data;
-  const [expanded, setExpaned] = useState(false);
+  const [expanded, setExpanded] = useState(false);
   const listItemValues = {
     status: {
       Completed: <AiOutlineCheck size={30} style={{ color: "#34C700" }} />,
@@ -30,7 +28,7 @@ export default function ListItem({ data }: { data: item }) {
   const handleDeleteItem = async () => {
     try {
       const response = await dispatch(deleteItemEntry({ _id }));
-      if (response) setExpaned(false);
+      if (response) setExpanded(false);
     } catch (error) {
       return error;
     }
@@ -38,7 +36,7 @@ export default function ListItem({ data }: { data: item }) {
 
   const RegularItem = () => {
     return (
-      <div className="list-item-container">
+      <button onClick={() => setExpanded(true)} className="list-item-container">
         <div className="list-item-property" style={{ height: 43 }}>
           {listItemValues.status[status]}
         </div>
@@ -54,16 +52,15 @@ export default function ListItem({ data }: { data: item }) {
         <h3 className="list-item-property">
           {topics ? (topics.length > 25 ? `${topics.slice(0, 25)}...` : topics) : null}
         </h3>
-        <button onClick={() => setExpaned(true)} className="list-item-edit-button">
-          <FcExpand size={24} />
-        </button>
-      </div>
+        <div className="list-item-edit-button" />
+      </button>
     );
   };
-  //delete, edit?
+
   const ExpandedItem = () => {
     return (
-      <div
+      <button
+        onClick={() => setExpanded(false)}
         className="list-item-container"
         style={{
           borderColor:
@@ -83,18 +80,13 @@ export default function ListItem({ data }: { data: item }) {
         </h3>
         <h3 className="list-item-property">{timeTaken}</h3>
         <h3 className="list-item-property">{dateCompleted}</h3>
-        <h3 className="list-item-property">
-          {topics ? (topics.length > 25 ? `${topics.slice(0, 25)}...` : topics) : null}
-        </h3>
+        <h3 className="list-item-property">{topics}</h3>
         <div style={{ width: 48, padding: 0, margin: 0 }}>
-          <button onClick={() => setExpaned(false)} className="list-item-edit-button">
-            <FcCollapse size={24} />
-          </button>
           <button onClick={handleDeleteItem} className="list-item-edit-button">
             <AiOutlineClose size={24} color={"#FF3333"} />
           </button>
         </div>
-      </div>
+      </button>
     );
   };
   return expanded ? <ExpandedItem /> : <RegularItem />;

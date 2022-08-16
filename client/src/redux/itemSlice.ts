@@ -103,7 +103,7 @@ export const itemsSlice = createSlice({
     builder.addCase(addItemEntry.fulfilled, (state, action) => {
       if (!state.itemList.hasOwnProperty(action.payload._id)) {
         state.itemList[action.payload._id] = action.payload;
-        state.itemIdList.push(action.payload._id);
+        state.itemIdList = [action.payload._id, ...state.itemIdList];
       }
     });
     builder.addCase(fetchAllItems.fulfilled, (state, action) => {
@@ -127,7 +127,7 @@ export const itemsSlice = createSlice({
 export const selectPagedItems = (state: RootState, page: number | null = null) => {
   let response: item[] = [];
   if (page) {
-    state.item.itemIdList.slice((page - 1) * 10, page * 10 - 1).forEach((id) => {
+    state.item.itemIdList.slice((page - 1) * 10, page * 10).forEach((id) => {
       response.push(state.item.itemList[id]);
     });
   } else {
@@ -142,7 +142,7 @@ export const selectPagedItems = (state: RootState, page: number | null = null) =
 export const selectPagedCompletedItems = (state: RootState, page: number | null = null) => {
   let response: item[] = [];
   if (page) {
-    state.item.itemIdList.forEach((id) => {
+    state.item.itemIdList.slice((page - 1) * 10, page * 10).forEach((id) => {
       const item = state.item.itemList[id];
       if (response.length < 10 && item.status === "Completed") {
         response.push(state.item.itemList[id]);
@@ -159,7 +159,7 @@ export const selectPagedCompletedItems = (state: RootState, page: number | null 
 export const selectPagedAttemptedItems = (state: RootState, page: number | null = null) => {
   let response: item[] = [];
   if (page) {
-    state.item.itemIdList.forEach((id) => {
+    state.item.itemIdList.slice((page - 1) * 10, page * 10).forEach((id) => {
       const item = state.item.itemList[id];
       if (response.length < 10 && item.status === "Attempted") {
         response.push(state.item.itemList[id]);
@@ -176,7 +176,7 @@ export const selectPagedAttemptedItems = (state: RootState, page: number | null 
 export const selectPagedToDoItems = (state: RootState, page: number | null = null) => {
   let response: item[] = [];
   if (page) {
-    state.item.itemIdList.forEach((id) => {
+    state.item.itemIdList.slice((page - 1) * 10, page * 10).forEach((id) => {
       const item = state.item.itemList[id];
       if (response.length < 10 && item.status === "To-Do") {
         response.push(state.item.itemList[id]);
@@ -186,6 +186,45 @@ export const selectPagedToDoItems = (state: RootState, page: number | null = nul
     state.item.itemIdList.forEach((id) => {
       const item = state.item.itemList[id];
       if (item.status === "To-Do") response.push(state.item.itemList[id]);
+    });
+  }
+  return response;
+};
+
+export const selectFilteredItems = (
+  state: RootState,
+  filters: { "All Problems": boolean; Completed: boolean; Attempted: boolean; "To-Do": boolean },
+) => {
+  let response: item[] = [];
+  if (filters["All Problems"]) {
+    state.item.itemIdList.forEach((id) => {
+      const item = state.item.itemList[id];
+      response.push(item);
+    });
+    return response;
+  }
+  if (filters["Attempted"]) {
+    state.item.itemIdList.forEach((id) => {
+      const item = state.item.itemList[id];
+      if (item.status === "Attempted") {
+        response.push(state.item.itemList[id]);
+      }
+    });
+  }
+  if (filters["To-Do"]) {
+    state.item.itemIdList.forEach((id) => {
+      const item = state.item.itemList[id];
+      if (item.status === "To-Do") {
+        response.push(state.item.itemList[id]);
+      }
+    });
+  }
+  if (filters["Completed"]) {
+    state.item.itemIdList.forEach((id) => {
+      const item = state.item.itemList[id];
+      if (item.status === "Completed") {
+        response.push(state.item.itemList[id]);
+      }
     });
   }
   return response;

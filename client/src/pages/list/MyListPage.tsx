@@ -4,6 +4,7 @@ import { useNavigate } from "react-router";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../redux/store";
 import { MdPlaylistAdd } from "react-icons/md";
+import { AiFillCaretLeft, AiFillCaretRight } from "react-icons/ai";
 
 import "./MyListPage.css";
 import SummaryBox from "../../components/list/SummaryBox";
@@ -13,6 +14,7 @@ import AddItemForm from "../../components/list/AddItemForm";
 import { AiOutlineClose } from "react-icons/ai";
 import {
   fetchAllItems,
+  selectFilteredItems,
   selectPagedAttemptedItems,
   selectPagedCompletedItems,
   selectPagedItems,
@@ -32,7 +34,13 @@ export default function MyListPage() {
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
   const [addingActive, setAddingActive] = useState<boolean>(false);
-
+  const [summaryBoxActive, setSummaryBoxActive] = useState({
+    "All Problems": true,
+    Completed: false,
+    Attempted: false,
+    "To-Do": false,
+  });
+  const [page, setPage] = useState(1);
   const userId = useSelector(selectUserId);
   useEffect(() => {
     const dispatchAllEntries = async () => {
@@ -41,12 +49,20 @@ export default function MyListPage() {
     dispatchAllEntries();
   }, [userId]);
 
-  const items = useSelector((state: RootState) => selectPagedItems(state, 1));
-  const allItems = useSelector(selectPagedItems);
+  const pagedAllItems = useSelector((state: RootState) => selectPagedItems(state, page));
+  const pagedCompletedItems = useSelector((state: RootState) =>
+    selectPagedCompletedItems(state, page),
+  );
+  const pagedAttemptedItems = useSelector((state: RootState) =>
+    selectPagedAttemptedItems(state, page),
+  );
+  const pagedToDoItems = useSelector((state: RootState) => selectPagedToDoItems(state, page));
   const allCompletedItems = useSelector(selectPagedCompletedItems);
   const allAttemptedItems = useSelector(selectPagedAttemptedItems);
   const allToDoItems = useSelector(selectPagedToDoItems);
-
+  const filteredList = useSelector((state: RootState) =>
+    selectFilteredItems(state, summaryBoxActive),
+  );
   const handleUserLogout = async () => {
     localStorage.clear();
     const response = await dispatch(authLogout());
@@ -117,15 +133,52 @@ export default function MyListPage() {
     "Topics",
   ];
 
+  const handleFilteredPageLogic = () => {
+    let total = 0;
+    if (summaryBoxActive["All Problems"]) {
+      return allAttemptedItems.length + allCompletedItems.length + allToDoItems.length;
+    }
+    if (summaryBoxActive["Attempted"]) total += allAttemptedItems.length;
+    if (summaryBoxActive["Completed"]) total += allCompletedItems.length;
+    if (summaryBoxActive["To-Do"]) total += allToDoItems.length;
+    return total;
+  };
+
+  useEffect(() => {
+    setPage(1);
+  }, [summaryBoxActive]);
+
   return (
     <div className="list-page-container">
       <NavigationTab />
       <div className="list-page-body">
         <div className="list-page-summary-box-row-container">
-          <SummaryBox status={"All Problems"} numberOfItems={allItems.length} />
-          <SummaryBox status={"Completed"} numberOfItems={allCompletedItems.length} />
-          <SummaryBox status={"In-Progress"} numberOfItems={allAttemptedItems.length} />
-          <SummaryBox status={"To-Do"} numberOfItems={allToDoItems.length} />
+          <SummaryBox
+            summaryBoxActive={summaryBoxActive}
+            setSummaryBoxActive={setSummaryBoxActive}
+            status={"All Problems"}
+            numberOfItems={
+              allAttemptedItems.length + allCompletedItems.length + allToDoItems.length
+            }
+          />
+          <SummaryBox
+            summaryBoxActive={summaryBoxActive}
+            setSummaryBoxActive={setSummaryBoxActive}
+            status={"Completed"}
+            numberOfItems={allCompletedItems.length}
+          />
+          <SummaryBox
+            summaryBoxActive={summaryBoxActive}
+            setSummaryBoxActive={setSummaryBoxActive}
+            status={"Attempted"}
+            numberOfItems={allAttemptedItems.length}
+          />
+          <SummaryBox
+            summaryBoxActive={summaryBoxActive}
+            setSummaryBoxActive={setSummaryBoxActive}
+            status={"To-Do"}
+            numberOfItems={allToDoItems.length}
+          />
         </div>
         <SearchBar />
         <div className="list-header-container">
@@ -161,11 +214,57 @@ export default function MyListPage() {
         {addingActive && (
           <AddItemForm addingActive={addingActive} setAddingActive={setAddingActive} />
         )}
-        {items
-          ? items.map((item, index) => {
-              return <ListItem key={index} data={item} />;
+        {filteredList
+          ? filteredList.slice((page - 1) * 10, page * 10).map((item, index) => {
+              return (
+                <>
+                  <div style={{ marginTop: 5 }} />
+                  <ListItem key={index} data={item} />
+                </>
+              );
             })
           : null}
+      </div>
+      <div className="switch-page-container">
+        <button
+          className="switch-buttons"
+          onClick={
+            page > 1
+              ? () =>
+                  setPage((prevPage) => {
+                    return prevPage - 1;
+                  })
+              : () => {
+                  return null;
+                }
+          }
+        >
+          {page > 1 ? (
+            <AiFillCaretLeft size={30} />
+          ) : (
+            <AiFillCaretLeft size={30} style={{ opacity: 0 }} />
+          )}
+        </button>
+        <p style={{ fontSize: "2em", padding: 0, margin: 0 }}>{page}</p>
+        <button
+          className="switch-buttons"
+          onClick={
+            handleFilteredPageLogic() > page * 10
+              ? () =>
+                  setPage((prevPage) => {
+                    return prevPage + 1;
+                  })
+              : () => {
+                  return null;
+                }
+          }
+        >
+          {handleFilteredPageLogic() > page * 10 ? (
+            <AiFillCaretRight size={30} />
+          ) : (
+            <AiFillCaretRight size={30} style={{ opacity: 0 }} />
+          )}
+        </button>
       </div>
     </div>
   );

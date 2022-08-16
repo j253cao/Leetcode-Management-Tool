@@ -7,6 +7,9 @@
   background: white;
   border: 1px solid #878787;
 }
+.list-item-container:hover {
+  cursor: pointer;
+}
 
 .list-item-property {
   display: flex;

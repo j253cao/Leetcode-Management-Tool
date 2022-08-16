@@ -71,14 +71,15 @@ export default function AddItemForm({
     try {
       const response = await dispatch(addItemEntry(inputData));
       if (response) {
-        setStatus("");
-        setProblemName("");
-        setDateCompleted("");
-        setDifficulty("");
-        setTopics("");
-        setTimeTaken("");
+        // setStatus("");
+        // setProblemName("");
+        // setDateCompleted("");
+        // setDifficulty("");
+        // setTopics("");
+        // setTimeTaken("");
       }
     } catch (error) {
+      handleErrorCheck();
       return error;
     }
     handleErrorCheck();

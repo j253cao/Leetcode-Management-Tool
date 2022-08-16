@@ -6,8 +6,13 @@
   width: 230px;
   height: 120px;
   background-color: white;
-  box-shadow: 0px 0px 1px 2px;
   border-radius: 5px;
+  outline: none;
+  border-style: none;
+}
+
+.summary-box-container:hover {
+  cursor: pointer;
 }
 
 .summary-box-text {

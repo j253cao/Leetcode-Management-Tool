@@ -4,6 +4,7 @@
   flex-direction: column;
   width: 1920px;
   height: 1000px;
+  position: relative;
 }
 .my-list-header-container {
   display: flex;
@@ -101,5 +102,24 @@
   border-style: none;
 }
 .list-header-add-item-button:hover {
+  cursor: pointer;
+}
+
+.switch-page-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  top: 95%;
+}
+
+.switch-buttons {
+  border: none;
+  outline: none;
+  padding: 0;
+  margin: 0;
+  background: inherit;
+}
+.switch-buttons:hover {
   cursor: pointer;
 }
