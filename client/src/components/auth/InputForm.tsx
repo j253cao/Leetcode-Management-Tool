@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import { BsFillPersonFill } from "react-icons/bs";
 import { BiLockAlt } from "react-icons/bi";
 import { MdAlternateEmail } from "react-icons/md";
-import validator from "validator";
 import { useDispatch } from "react-redux";
 
 import "./InputForm.css";
@@ -57,7 +56,7 @@ export default function InputForm({ login = true }: { login: boolean }) {
           return { ...prevState, invalidUsername: true };
         });
       }
-      if (validator.isEmail(email)) {
+      if (email) {
         formData.email = email;
         setInvalidInput((prevState) => {
           return { ...prevState, invalidEmail: false };
