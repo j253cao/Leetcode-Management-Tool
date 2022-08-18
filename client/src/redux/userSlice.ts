@@ -18,7 +18,7 @@ export const fetchUser = createAsyncThunk(
     thunkAPI,
   ) => {
     try {
-      const response = await axios.get("http://localhost:5000/users/fetch-user", {
+      const response = await axios.get("https://leetmanage.herokuapp.com/users/fetch-user", {
         params: data,
       });
       return response;

@@ -1,7 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
-import { stat } from "fs";
-import { Root } from "react-dom/client";
 import { RootState } from "./store";
 
 export type difficulty = "Easy" | "Medium" | "Hard";
@@ -48,7 +46,7 @@ export const addItemEntry = createAsyncThunk(
     thunkAPI,
   ) => {
     try {
-      const response = await axios.post("http://localhost:5000/entries/add", data);
+      const response = await axios.post("https://leetmanage.herokuapp.com/entries/add", data);
       return response.data.item;
     } catch (error) {}
   },
@@ -63,7 +61,7 @@ export const fetchAllItems = createAsyncThunk(
     thunkAPI,
   ) => {
     try {
-      const response = await axios.get("http://localhost:5000/entries/fetch", {
+      const response = await axios.get("https://leetmanage.herokuapp.com/entries/fetch", {
         params: { ownerId: data.ownerId },
       });
       const result = response.data.response;
@@ -83,7 +81,9 @@ export const deleteItemEntry = createAsyncThunk(
     thunkAPI,
   ) => {
     try {
-      const response = await axios.delete("http://localhost:5000/entries/delete", { data });
+      const response = await axios.delete("https://leetmanage.herokuapp.com/entries/delete", {
+        data,
+      });
       const result = response.data.response;
       return result;
     } catch (error) {
