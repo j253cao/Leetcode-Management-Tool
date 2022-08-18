@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "start": "node server/index.js",
-    "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false npm install --previx cliend && npm run build --prefix client"
+    "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false npm install --previx client && npm run build --prefix client"
   },
   "keywords": [],
   "author": "",
