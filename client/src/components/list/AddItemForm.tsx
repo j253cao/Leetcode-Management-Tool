@@ -161,7 +161,6 @@ export default function AddItemForm({
           onChange={(event) => setTopics(event.target.value)}
           value={topics}
           className="add-item-text-input"
-          style={{ paddingTop: 8, height: 22 }}
           placeholder="Problem notes.."
         ></textarea>
         <button type="button" onClick={handleSubmit} className="add-item-form-add-button">

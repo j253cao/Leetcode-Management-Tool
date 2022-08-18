@@ -123,3 +123,128 @@
 .switch-buttons:hover {
   cursor: pointer;
 }
+.header-text {
+  font-weight: normal;
+  width: 15%;
+  font-size: 1.2em;
+  text-align: center;
+}
+@media only screen and (max-width: 1600px) {
+  .list-page-container {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    width: 1600px;
+    height: 800px;
+    position: relative;
+  }
+  .list-header-container {
+    margin: 0;
+  }
+  .my-list-header-container {
+    display: flex;
+    flex-direction: row;
+    width: 80%;
+    height: 40px;
+    justify-content: space-around;
+    align-items: center;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    border-radius: 10px;
+  }
+
+  .list-page-body {
+    width: 80%;
+  }
+
+  .search-bar-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    width: 200px;
+    height: 25px;
+    background: #ffffff;
+    border: 1px solid #5863f8;
+    border-radius: 10px;
+    margin-top: 2%;
+  }
+  .header-text {
+    font-weight: normal;
+    width: 15%;
+    font-size: 1em;
+    text-align: center;
+    margin: 0;
+  }
+  .switch-buttons {
+    border: none;
+    outline: none;
+    padding: 0;
+    margin: 0;
+    background: inherit;
+  }
+  .switch-buttons:hover {
+    cursor: pointer;
+  }
+}
+@media only screen and (max-width: 1440px) {
+  .list-page-container {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    width: 1440px;
+    height: 780px;
+    position: relative;
+  }
+  .list-header-container {
+    margin: 0;
+  }
+  .my-list-header-container {
+    display: flex;
+    flex-direction: row;
+    width: 80%;
+    height: 40px;
+    justify-content: space-around;
+    align-items: center;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    border-radius: 10px;
+  }
+
+  .list-page-body {
+    width: 80%;
+  }
+
+  .search-bar-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    width: 200px;
+    height: 25px;
+    background: #ffffff;
+    border: 1px solid #5863f8;
+    border-radius: 10px;
+    margin-top: 2%;
+  }
+  .header-text {
+    font-weight: normal;
+    width: 15%;
+    font-size: 1em;
+    text-align: center;
+    margin: 0;
+  }
+  .switch-buttons {
+    border: none;
+    outline: none;
+    padding: 0;
+    margin: 0;
+    background: inherit;
+  }
+  .switch-buttons:hover {
+    cursor: pointer;
+  }
+  .switch-page-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    top: 95%;
+  }
+}

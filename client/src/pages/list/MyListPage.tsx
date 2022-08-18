@@ -17,15 +17,31 @@ import {
   selectFilteredItems,
   selectPagedAttemptedItems,
   selectPagedCompletedItems,
-  selectPagedItems,
   selectPagedToDoItems,
 } from "../../redux/itemSlice";
 
-const SearchBar = () => {
+const SearchBar = ({
+  searchTerm,
+  setSearchTerm,
+  setPage,
+}: {
+  searchTerm: string;
+  setSearchTerm: React.Dispatch<React.SetStateAction<string>>;
+  setPage: React.Dispatch<React.SetStateAction<number>>;
+}) => {
   return (
     <div className="search-bar-container">
       <FiSearch size={20} style={{ marginLeft: 10 }} />
-      <input className="search-bar-input" type="text" placeholder="Search" />
+      <input
+        onChange={(e) => {
+          setSearchTerm(e.target.value);
+          setPage(1);
+        }}
+        value={searchTerm}
+        className="search-bar-input"
+        type="text"
+        placeholder="Search"
+      />
     </div>
   );
 };
@@ -48,15 +64,7 @@ export default function MyListPage() {
     };
     dispatchAllEntries();
   }, [userId]);
-
-  const pagedAllItems = useSelector((state: RootState) => selectPagedItems(state, page));
-  const pagedCompletedItems = useSelector((state: RootState) =>
-    selectPagedCompletedItems(state, page),
-  );
-  const pagedAttemptedItems = useSelector((state: RootState) =>
-    selectPagedAttemptedItems(state, page),
-  );
-  const pagedToDoItems = useSelector((state: RootState) => selectPagedToDoItems(state, page));
+  const [searchTerm, setSearchTerm] = useState("");
   const allCompletedItems = useSelector(selectPagedCompletedItems);
   const allAttemptedItems = useSelector(selectPagedAttemptedItems);
   const allToDoItems = useSelector(selectPagedToDoItems);
@@ -97,7 +105,7 @@ export default function MyListPage() {
             Tracker
           </button>
         </div>
-        <div
+        {/* <div
           style={!trackerActive ? activeHeaderStyle : {}}
           className="my-list-header-button-statistics-container"
         >
@@ -114,7 +122,7 @@ export default function MyListPage() {
           >
             Statistics
           </button>
-        </div>
+        </div> */}
         <div className="my-list-header-button-tracker-container">
           <button onClick={handleUserLogout} className="my-list-header-button-tracker ">
             Logout
@@ -180,19 +188,11 @@ export default function MyListPage() {
             numberOfItems={allToDoItems.length}
           />
         </div>
-        <SearchBar />
+        <SearchBar searchTerm={searchTerm} setSearchTerm={setSearchTerm} setPage={setPage} />
         <div className="list-header-container">
           {headerCategories.map((category, index) => {
             return (
-              <h3
-                key={index}
-                style={{
-                  fontWeight: "normal",
-                  width: "15%",
-                  fontSize: "1.2em",
-                  textAlign: "center",
-                }}
-              >
+              <h3 key={index} className="header-text">
                 {category}
               </h3>
             );
@@ -215,14 +215,23 @@ export default function MyListPage() {
           <AddItemForm addingActive={addingActive} setAddingActive={setAddingActive} />
         )}
         {filteredList
-          ? filteredList.slice((page - 1) * 10, page * 10).map((item, index) => {
-              return (
-                <>
-                  <div style={{ marginTop: 5 }} />
-                  <ListItem key={index} data={item} />
-                </>
-              );
-            })
+          ? filteredList
+              .filter((val) => {
+                if (!searchTerm) {
+                  return val;
+                } else if (val.problemName.toLowerCase().includes(searchTerm.toLowerCase())) {
+                  return val;
+                }
+              })
+              .slice((page - 1) * 10, page * 10)
+              .map((item, index) => {
+                return (
+                  <>
+                    <div style={{ marginTop: 5 }} />
+                    <ListItem key={index} data={item} />
+                  </>
+                );
+              })
           : null}
       </div>
       <div className="switch-page-container">

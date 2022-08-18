@@ -28,3 +28,46 @@
   align-items: center;
   width: 80%;
 }
+
+@media only screen and (max-width: 1600px) {
+  .summary-box-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 200px;
+    height: 100px;
+    background-color: white;
+    border-radius: 5px;
+    outline: none;
+    border-style: none;
+  }
+}
+@media only screen and (max-width: 1440px) {
+  .summary-box-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 200px;
+    height: 90px;
+    background-color: white;
+    border-radius: 5px;
+    outline: none;
+    border-style: none;
+  }
+}
+@media only screen and (max-width: 1200px) {
+  .summary-box-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100px;
+    height: 50px;
+    background-color: white;
+    border-radius: 5px;
+    outline: none;
+    border-style: none;
+  }
+}

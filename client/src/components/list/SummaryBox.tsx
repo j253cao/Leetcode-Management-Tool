@@ -31,7 +31,6 @@ export default function SummaryBox({
 
   const handleSummaryBoxState = () => {
     if (status != "All Problems") {
-      console.log("asd");
       setSummaryBoxActive({
         ...summaryBoxActive,
         [status]: !summaryBoxActive[status],
