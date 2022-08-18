@@ -4,6 +4,9 @@
   "description": "",
   "main": "index.js",
   "type": "module",
+  "endinges": {
+    "node": "16.15.0"
+  },
   "scripts": {
     "start": "node server/index.js",
     "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false npm install --previx client && npm run build --prefix client"
