@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "type": "module",
-  "endinges": {
+  "engines": {
     "node": "16.15.0"
   },
   "scripts": {
