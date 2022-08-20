@@ -18,6 +18,10 @@ app.use(express.json());
 app.use("/users", usersRoutes);
 app.use("/entries", entriesRoutes);
 
+app.get("/", (req, res) => {
+  res.send("Hello LeetTrack API");
+});
+
 const mongoDBUri = process.env.MONGOOSE_URI;
 mongoose.connect(mongoDBUri, { useNewUrlParser: true });
 

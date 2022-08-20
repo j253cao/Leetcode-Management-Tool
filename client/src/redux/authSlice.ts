@@ -48,7 +48,6 @@ export const userSignUp = createAsyncThunk(
     try {
       const response = await axios.post("https://leetmanage.herokuapp.com/sign-up", data);
       const result = response.data;
-
       return result;
     } catch (error) {
       console.log(error);
