@@ -25,7 +25,7 @@ export const verifyLogin = createAsyncThunk(
     thunkAPI,
   ) => {
     try {
-      const response = await axios.post("https://leetmanage.herokuapp.com/login", data);
+      const response = await axios.post("https://leetmanage.herokuapp.com/users/login", data);
       const token = response.data.token;
       const result = { ...response.data.result, token };
       return result;
@@ -46,7 +46,7 @@ export const userSignUp = createAsyncThunk(
     thunkAPI,
   ) => {
     try {
-      const response = await axios.post("https://leetmanage.herokuapp.com/sign-up", data);
+      const response = await axios.post("https://leetmanage.herokuapp.com/users/sign-up", data);
       const result = response.data;
       return result;
     } catch (error) {
